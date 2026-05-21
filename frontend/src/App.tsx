@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import AuditForm from './pages/AuditForm';
 import Results from './pages/Results';
 import PublicAudit from './pages/PublicAudit';
-import Demo from './pages/Demo';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -49,7 +48,6 @@ export default function App() {
             <Route path="/audit" element={<AuditForm />} />
             <Route path="/results" element={<Results />} />
             <Route path="/audit/:id" element={<PublicAudit />} />
-            <Route path="/demo" element={<Demo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </motion.main>

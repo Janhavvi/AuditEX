@@ -78,7 +78,6 @@ interface AuditState {
   updateTool: (id: string, values: Partial<AuditTool>) => void;
   runCurrentAudit: () => AuditReport;
   setReport: (report: AuditReport) => void;
-  loadDemo: () => AuditReport;
   reset: () => void;
 }
 
@@ -129,21 +128,6 @@ export const useAuditStore = create<AuditState>((set, get) => ({
   setReport: (report) => {
     storage.set('report', report);
     set({ report, tools: report.tools });
-  },
-  loadDemo: () => {
-    const tools: AuditTool[] = [
-      { ...createTool('ChatGPT'), plan: 'Team', monthlySpend: 180, seats: 6, teamSize: 4, useCase: 'mixed' as UseCase },
-      { ...createTool('Claude'), plan: 'Team', monthlySpend: 150, seats: 5, teamSize: 4, useCase: 'research' },
-      { ...createTool('Cursor'), plan: 'Business', monthlySpend: 360, seats: 9, teamSize: 6, useCase: 'coding' },
-      { ...createTool('GitHub Copilot'), plan: 'Business', monthlySpend: 171, seats: 9, teamSize: 6, useCase: 'coding' },
-      { ...createTool('Anthropic API direct'), plan: 'API direct', monthlySpend: 840, seats: 1, teamSize: 6, useCase: 'data' },
-      { ...createTool('v0'), plan: 'Team', monthlySpend: 90, seats: 3, teamSize: 6, useCase: 'coding' },
-    ];
-    const report = runAudit(tools);
-    storage.set('tools', tools);
-    storage.set('report', report);
-    set({ tools, report });
-    return report;
   },
   reset: () => {
     const tools = [createTool('ChatGPT')];
