@@ -172,6 +172,4 @@ Backend on Render or Railway:
 3. Start command: `npm start`.
 4. Add `PORT`, `MONGODB_URI`, and `CLIENT_URL`.
 
-## Internship Submission Notes
-
 AuditEX is structured like a production SaaS project with separate frontend and backend apps, typed data contracts, reusable UI components, modular audit logic, deployable API routes, MongoDB persistence, and a polished responsive interface. The project demonstrates frontend engineering, backend API design, database modeling, business logic, state management, animated UX, and deployment readiness.
