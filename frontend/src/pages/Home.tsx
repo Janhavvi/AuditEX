@@ -87,7 +87,7 @@ export default function Home() {
             Build a clean spend baseline before the next renewal cycle.
           </p>
           <Link to="/audit" className="mt-8 inline-flex">
-            <AnimatedButton>Start Free Audit</AnimatedButton>
+            <AnimatedButton>Start Audit</AnimatedButton>
           </Link>
         </div>
       </section>

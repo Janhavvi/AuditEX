@@ -18,7 +18,7 @@ export default function Results() {
         <h1 className="text-4xl font-bold text-white">No audit generated yet</h1>
         <p className="mt-4 text-[#94A3B8]">Start with your AI tools and generate a fresh report.</p>
         <Link to="/audit" className="mt-8 inline-flex">
-          <AnimatedButton>Start Free Audit</AnimatedButton>
+          <AnimatedButton>Start Audit</AnimatedButton>
         </Link>
       </div>
     );
