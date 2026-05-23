@@ -38,6 +38,17 @@ export interface AuditTool {
   useCase: UseCase;
 }
 
+export interface AuditToolForm {
+  id: string;
+  tool: ToolName | '';
+  plan: string;
+  monthlySpend: number | '';
+  seats: number | '';
+  teamSize: number | '';
+  useCase: UseCase | '';
+  isCollapsed?: boolean;
+}
+
 export interface Recommendation {
   id: string;
   title: string;

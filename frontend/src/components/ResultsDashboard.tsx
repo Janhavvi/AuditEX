@@ -1,27 +1,27 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, BarChart3, CheckCircle2, ChevronRight, ClipboardCheck, Copy, ExternalLink, LockKeyhole, Printer, Share2 } from 'lucide-react';
+import { BarChart3, CheckCircle2, ClipboardCheck, Copy, ExternalLink, LockKeyhole, Printer, Share2 } from 'lucide-react';
 import type { AuditReport } from '../types/audit';
 import { currency, percent } from '../utils/formatter';
 import { generateSummary, getAuditPdfUrl } from '../utils/api';
 import AnimatedButton from './AnimatedButton';
 import ConsultationCTA from './ConsultationCTA';
 import EmailCapture from './EmailCapture';
-import RecommendationCard from './RecommendationCard';
+import RecommendationCarousel from './RecommendationCarousel';
 import SavingsChart from './SavingsChart';
 
 export default function ResultsDashboard({ report, publicView = false }: { report: AuditReport; publicView?: boolean }) {
   const [summary, setSummary] = useState(report.summary || '');
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle');
-  const [activeRecommendation, setActiveRecommendation] = useState(0);
+  
   const statCards = [
     ['Monthly spend', currency(report.totals.totalMonthlySpend)],
     ['Yearly spend', currency(report.totals.totalYearlySpend)],
     ['Monthly savings', currency(report.totals.estimatedMonthlySavings)],
     ['Savings rate', percent(report.totals.savingsPercentage)],
   ];
-  const currentRecommendation = report.recommendations[activeRecommendation];
+  
   const reviewCount = report.recommendations.length;
   const shareUrl = report.auditId ? `${window.location.origin}/audit/${report.auditId}` : '';
   const shareText = `AuditEX found ${currency(report.totals.estimatedYearlySavings)} in potential yearly AI savings across ${report.tools.length} tools.`;
@@ -57,11 +57,6 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
       active = false;
     };
   }, [fallbackSummary, report, summary]);
-
-  const updateRecommendation = (nextIndex: number) => {
-    setActiveRecommendation(nextIndex);
-    document.getElementById('review')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
-  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-28 sm:px-6 lg:px-8">
@@ -179,61 +174,40 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
         </motion.div>
       </section>
 
-      <section id="review" className="scroll-mt-28 border-t border-white/10 pt-10">
-        <div className="mb-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+      <section id="review" className="scroll-mt-28 border-t border-white/10 pt-16">
+        <div className="mb-12">
           <div>
             <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-aqua">
               <ClipboardCheck className="h-4 w-4" />
-              Review
+              Recommendations
             </p>
-            <h2 className="mt-3 text-3xl font-bold text-white">Recommended actions</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[#94A3B8]">
-              Review one recommendation at a time before sharing or saving the report.
+            <h2 className="mt-4 text-4xl md:text-5xl font-bold text-white">Review & optimize</h2>
+            <p className="mt-4 max-w-3xl text-base leading-7 text-[#94A3B8]">
+              Explore each recommendation in detail. Use arrow keys or pagination dots to navigate through the insights.
             </p>
           </div>
-          {reviewCount > 0 && (
-            <span className="rounded-full border border-white/10 bg-[#0A0F23]/45 px-4 py-2 text-sm font-semibold text-[#CBD5E1]">
-              {activeRecommendation + 1} of {reviewCount}
-            </span>
-          )}
         </div>
 
-        {report.totals.estimatedMonthlySavings > 500 && activeRecommendation === 0 && (
-          <div className="mb-6">
+        {report.totals.estimatedMonthlySavings > 500 && (
+          <div className="mb-8">
             <ConsultationCTA />
           </div>
         )}
 
-        <AnimatePresence mode="wait">
-          {currentRecommendation ? (
-            <motion.div
-              key={currentRecommendation.id}
-              initial={{ opacity: 0, rotateY: 16, x: 36 }}
-              animate={{ opacity: 1, rotateY: 0, x: 0 }}
-              exit={{ opacity: 0, rotateY: -16, x: -36 }}
-              transition={{ duration: 0.32, ease: 'easeOut' }}
-              className="perspective-stage"
-            >
-              <RecommendationCard recommendation={currentRecommendation} index={0} />
-            </motion.div>
-          ) : (
-            <div className="glass-card rounded-3xl p-6 text-center">
-              <h3 className="text-2xl font-bold text-white">No recommendations needed</h3>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#94A3B8]">
-                This stack is already close to the benchmark. Keep monitoring usage before renewal.
-              </p>
-            </div>
-          )}
-        </AnimatePresence>
+        <RecommendationCarousel 
+          recommendations={report.recommendations}
+          autoplay={false}
+          autoplayDelay={5000}
+        />
 
-        <div className="mt-10">
+        <div className="mt-12">
           {publicView ? (
-            <div className="glass-card rounded-3xl p-6 text-center">
+            <div className="glass-card rounded-3xl p-8 text-center">
               <h3 className="text-2xl font-bold text-white">Benchmark your own AI spend</h3>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#94A3B8]">
                 Generate a separate audit with your own tools, seats, spend, and use cases.
               </p>
-              <Link to="/audit" className="mt-5 inline-flex">
+              <Link to="/audit" className="mt-6 inline-flex">
                 <AnimatedButton>Run a new audit</AnimatedButton>
               </Link>
             </div>
@@ -242,35 +216,6 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
           )}
         </div>
       </section>
-
-      <div className="sticky bottom-4 z-20 mt-8 rounded-2xl border border-white/10 bg-[#050816]/75 p-3 shadow-[0_18px_60px_rgba(2,6,23,0.42)] backdrop-blur-xl">
-        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-          <p className="text-sm font-semibold text-[#94A3B8]">
-            Review {reviewCount ? `${activeRecommendation + 1} of ${reviewCount}` : 'complete'}
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            {activeRecommendation > 0 && (
-              <button
-                type="button"
-                onClick={() => updateRecommendation(Math.max(activeRecommendation - 1, 0))}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#11152E]/35 px-5 py-3 text-sm font-semibold text-[#CBD5E1] transition hover:bg-[#11152E]/60 hover:text-white"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </button>
-            )}
-            {activeRecommendation < reviewCount - 1 ? (
-              <AnimatedButton type="button" onClick={() => updateRecommendation(Math.min(activeRecommendation + 1, reviewCount - 1))} icon={<ChevronRight className="h-4 w-4" />}>
-                Next
-              </AnimatedButton>
-            ) : (
-              <Link to="/audit">
-                <AnimatedButton type="button">New Audit</AnimatedButton>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
