@@ -4,7 +4,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import ResultsDashboard from '../components/ResultsDashboard';
 import AnimatedButton from '../components/AnimatedButton';
 import type { AuditReport } from '../types/audit';
-import { fetchAudit } from '../utils/api';
+import { fetchAudit, getAuditShareUrl } from '../utils/api';
 import { currency } from '../utils/formatter';
 
 export default function PublicAudit() {
@@ -20,10 +20,12 @@ export default function PublicAudit() {
         document.title = `AuditEX Report ${data.auditId}`;
         const title = document.querySelector('meta[property="og:title"]');
         const description = document.querySelector('meta[property="og:description"]');
+        const url = document.querySelector('meta[property="og:url"]');
         const twitterTitle = document.querySelector('meta[name="twitter:title"]');
         const twitterDescription = document.querySelector('meta[name="twitter:description"]');
         title?.setAttribute('content', `AuditEX report: ${currency(data.totals.estimatedYearlySavings)} yearly savings`);
         description?.setAttribute('content', `${data.recommendations.length} AI spend recommendations across ${data.tools.length} tools.`);
+        if (data.auditId) url?.setAttribute('content', getAuditShareUrl(data.auditId));
         twitterTitle?.setAttribute('content', `AuditEX report: ${currency(data.totals.estimatedYearlySavings)} yearly savings`);
         twitterDescription?.setAttribute('content', `${data.recommendations.length} AI spend recommendations across ${data.tools.length} tools.`);
       })

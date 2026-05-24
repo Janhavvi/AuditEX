@@ -29,5 +29,6 @@ export const generateSummary = async (report: AuditReport) => {
 };
 
 export const getAuditPdfUrl = (id: string) => `${apiBaseUrl}/audits/${encodeURIComponent(id)}/pdf`;
+export const getAuditShareUrl = (id: string) => `${apiBaseUrl}/audits/${encodeURIComponent(id)}/share`;
 
 export default api;

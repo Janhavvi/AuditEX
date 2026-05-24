@@ -3,7 +3,15 @@ import { MailCheck, Save, ShieldCheck } from 'lucide-react';
 import { saveLead } from '../utils/api';
 import AnimatedButton from './AnimatedButton';
 
-export default function EmailCapture({ auditId, efficient = false }: { auditId?: string; efficient?: boolean }) {
+export default function EmailCapture({
+  auditId,
+  efficient = false,
+  estimatedMonthlySavings = 0,
+}: {
+  auditId?: string;
+  efficient?: boolean;
+  estimatedMonthlySavings?: number;
+}) {
   const [form, setForm] = useState({ name: '', email: '', company: '', role: '', teamSize: '', website: '' });
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
@@ -11,7 +19,12 @@ export default function EmailCapture({ auditId, efficient = false }: { auditId?:
     event.preventDefault();
     setStatus('saving');
     try {
-      await saveLead({ ...form, teamSize: form.teamSize ? Number(form.teamSize) : undefined, auditId });
+      await saveLead({
+        ...form,
+        teamSize: form.teamSize ? Number(form.teamSize) : undefined,
+        auditId,
+        estimatedMonthlySavings,
+      });
       setStatus('saved');
     } catch {
       setStatus('error');
@@ -26,10 +39,12 @@ export default function EmailCapture({ auditId, efficient = false }: { auditId?:
           Lead capture
         </p>
         <h3 className="mt-2 text-2xl font-bold text-white">
-          {efficient ? 'Notify me when new optimizations apply to my stack.' : 'Send me this audit and next steps'}
+          {efficient ? 'Notify me when new optimizations apply to my stack' : 'Send me this audit and next steps'}
         </h3>
         <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
-          Name and email are required. Organization, role, and team size help route high-savings reports for follow-up.
+          {efficient
+            ? "You're spending well today. Leave your email and AuditEX will flag new pricing, credits, or stack changes when they become relevant."
+            : 'Name and email are required. Organization, role, and team size help route high-savings reports for follow-up.'}
         </p>
       </div>
       <input
@@ -50,7 +65,7 @@ export default function EmailCapture({ auditId, efficient = false }: { auditId?:
       </div>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <AnimatedButton type="submit" disabled={status === 'saving'} icon={<Save className="h-4 w-4" />}>
-          {status === 'saving' ? 'Saving...' : 'Save My Audit Report'}
+          {status === 'saving' ? 'Saving...' : efficient ? 'Notify Me' : 'Save My Audit Report'}
         </AnimatedButton>
         {status === 'saved' && <p className="text-sm text-[#22D3EE]">Saved. Your team can revisit this audit anytime.</p>}
         {status === 'error' && <p className="text-sm text-[#8B5CF6]">Lead capture is offline. The report still works locally.</p>}

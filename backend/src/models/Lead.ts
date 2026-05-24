@@ -7,6 +7,8 @@ interface LeadDocument extends mongoose.Document {
   role?: string;
   teamSize?: number;
   auditId?: string;
+  estimatedMonthlySavings?: number;
+  highSavings: boolean;
   createdAt: Date;
 }
 
@@ -18,6 +20,8 @@ const LeadSchema = new Schema<LeadDocument>(
     role: { type: String, trim: true },
     teamSize: { type: Number, min: 1 },
     auditId: { type: String, index: true },
+    estimatedMonthlySavings: { type: Number, min: 0 },
+    highSavings: { type: Boolean, default: false, index: true },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );

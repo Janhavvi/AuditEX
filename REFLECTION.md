@@ -1,0 +1,29 @@
+# Reflection
+
+## 1. The hardest bug you hit this week, and how you debugged it
+
+The hardest issue was making shareable result URLs work for real social previews instead of only appearing to work inside the React app. My first hypothesis was that updating meta tags in `PublicAudit.tsx` after fetching the audit would be enough. That worked in the browser DOM, but it would not work reliably for Twitter, LinkedIn, or Slack because crawlers often read the initial HTML and do not wait for client-side React effects. I checked the public audit flow and realized the frontend could show the right report while bots would still see the generic `index.html` metadata. The fix was to move preview generation to the backend. I added `/api/audits/:id/share`, which returns crawler-readable HTML with Open Graph and Twitter tags, plus `/api/audits/:id/og.svg` for a dynamic image. Then the frontend share buttons copy the backend share URL, while humans are redirected to `/audit/:id`. The debugging lesson was that "works in browser devtools" is not the same as "works for crawlers." The actual test was hitting the share endpoint directly and checking that the HTML contained the correct title, description, and image before React ever loaded.
+
+## 2. A decision you reversed mid-week, and what made you reverse it
+
+I reversed the LLM provider decision for the personalized summary. The initial implementation made Anthropic the primary provider because the requirement said Anthropic was preferred. That was technically reasonable, and I added failure handling so missing keys or API errors fell back gracefully. But after reviewing the project direction and the explicit follow-up request to use the NVIDIA API, I changed the provider order so NVIDIA NIM is the first LLM call, Anthropic is optional backup, and the deterministic template remains the final fallback. The reversal was not just a variable rename; it changed the documented provider order in `PROMPTS.md`, the `.env.example` ordering, and the mental model for the evaluator. The important part was keeping the audit math separate. I did not let the model calculate savings, rank vendors, or invent recommendations. The LLM only writes a paragraph from deterministic facts. That separation made the provider switch low-risk: the business logic stayed stable while the summary-writing adapter changed. The lesson was to treat AI providers as replaceable infrastructure and deterministic rules as the product's source of truth.
+
+## 3. What you would build in week 2 if you had it
+
+In week 2, I would build the parts that turn AuditEX from a polished demo into a repeatable acquisition machine. First, I would add analytics instrumentation for every key funnel event: audit started, first tool added, audit generated, high-savings threshold crossed, public link copied, PDF downloaded, lead submitted, and Credex CTA clicked. Second, I would add benchmark mode. The current product tells a team what it can save, but it does not yet answer the emotionally sharper question: "Are we spending more than companies like us?" A benchmark by team size and developer count would make the result more shareable and more urgent. Third, I would add a simple embedded widget so blog posts and founder newsletters can offer "check your AI spend" without sending users away first. Fourth, I would improve performance through route-level code splitting, especially deferring 3D and chart-heavy sections. Finally, I would add an internal lead review view for Credex: high-savings leads, estimated monthly savings, stack composition, and recommended next action. That would close the loop between public audit virality and actual sales follow-up.
+
+## 4. How you used AI tools
+
+I used AI as a coding pair for implementation, architecture checks, and writing first drafts of documentation. It was useful for quickly identifying where features belonged in the existing codebase: results dashboard, lead controller, audit controller, and pricing/audit utility files. I also used it to generate structured drafts for GTM, economics, metrics, and architecture files, then checked them against the actual product behavior. I did not trust AI with the audit math. The savings rules needed to be deterministic, explainable, and testable, so the implementation uses hardcoded benchmarks and rule branches rather than model judgment. One specific time the AI was wrong was the provider choice for the summary endpoint: it initially prioritized Anthropic after reading the requirement, but the later product decision was to use NVIDIA. I caught that because the prompt explicitly changed direction, and I switched the provider order, docs, and env examples. Another place I did not trust AI was user interviews and devlog history. Those cannot be generated honestly. I left scaffolds and warnings instead of fabricating human conversations or fake workdays.
+
+## 5. Self-rating
+
+**Discipline: 7/10.** I kept the product moving across frontend, backend, docs, and tests, but the git history requirement needs more consistent daily commits than the repo currently shows.
+
+**Code quality: 8/10.** The core audit logic is typed, deterministic, covered by tests, and separated from AI summary generation, though the frontend bundle should be split before production scale.
+
+**Design sense: 8/10.** The results page now has a clear savings hero, honest low-savings messaging, per-tool breakdown, and high-savings Credex CTA, which fits the product's business goal.
+
+**Problem-solving: 8/10.** The main architectural fixes were pragmatic: backend share previews for crawler metadata, provider-level AI fallback, sanitized public report payloads, and real lead persistence.
+
+**Entrepreneurial thinking: 7/10.** The GTM and economics are specific to Credex-style lead generation, but real interview evidence and deployed traction are still the missing proof.

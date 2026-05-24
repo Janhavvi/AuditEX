@@ -86,4 +86,5 @@ export interface LeadPayload {
   teamSize?: number;
   website?: string;
   auditId?: string;
+  estimatedMonthlySavings?: number;
 }
