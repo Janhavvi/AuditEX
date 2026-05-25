@@ -27,17 +27,26 @@ interface Props {
   report: AuditReport;
   publicView?: boolean;
   ensureAuditSaved?: () => Promise<string | undefined>;
+  publicReportUrlOverride?: string;
+  shareUrlOverride?: string;
 }
 
-export default function ResultsDashboard({ report, publicView = false, ensureAuditSaved }: Props) {
+export default function ResultsDashboard({
+  report,
+  publicView = false,
+  ensureAuditSaved,
+  publicReportUrlOverride = '',
+  shareUrlOverride = '',
+}: Props) {
   const [summary, setSummary] = useState(report.summary || '');
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle');
 
   const efficientAudit = isEfficientAudit(report);
   const fallbackSummary = useMemo(() => fallbackSummaryFor(report), [report]);
   const referralCode = referralCodeFromAuditId(report.auditId);
-  const shareUrl = report.auditId ? withReferralCode(getAuditShareUrl(report.auditId), referralCode) : '';
-  const publicReportUrl = report.auditId ? withReferralCode(`${window.location.origin}/audit/${report.auditId}`, referralCode) : '';
+  const shareUrl = shareUrlOverride || (report.auditId ? withReferralCode(getAuditShareUrl(report.auditId), referralCode) : '');
+  const publicReportUrl =
+    publicReportUrlOverride || (report.auditId ? withReferralCode(`${window.location.origin}/audit/${report.auditId}`, referralCode) : '');
   const shareText = `AuditEX found ${currency(report.totals.estimatedYearlySavings)} in potential yearly AI savings across ${report.tools.length} tools.`;
   const shareSubject = 'AuditEX AI spend report';
   const pdfUrl = report.auditId ? getAuditPdfUrl(report.auditId) : '';
