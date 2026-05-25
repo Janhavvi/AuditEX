@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ResultsDashboard from '../components/ResultsDashboard';
-import LoadingScreen from '../components/LoadingScreen';
 import { useAuditStore } from '../store/auditStore';
 import { saveAudit } from '../utils/api';
 import AnimatedButton from '../components/AnimatedButton';
 
 export default function Results() {
   const { report, setReport } = useAuditStore();
-  const [saving, setSaving] = useState(false);
   const [apiError, setApiError] = useState(false);
   const saveAttempted = useRef(false);
 
@@ -16,7 +14,6 @@ export default function Results() {
     if (!report) return undefined;
     if (report.auditId) return report.auditId;
 
-    setSaving(true);
     setApiError(false);
     try {
       const saved = await saveAudit(report);
@@ -25,8 +22,6 @@ export default function Results() {
     } catch {
       setApiError(true);
       throw new Error('Unable to save audit.');
-    } finally {
-      setSaving(false);
     }
   }, [report, setReport]);
 
@@ -47,8 +42,6 @@ export default function Results() {
       </div>
     );
   }
-
-  if (saving) return <LoadingScreen label="Generating share link" />;
 
   return (
     <>
