@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import ResultsDashboard from '../components/ResultsDashboard';
 import LoadingScreen from '../components/LoadingScreen';
@@ -7,7 +7,6 @@ import { saveAudit } from '../utils/api';
 import AnimatedButton from '../components/AnimatedButton';
 
 export default function Results() {
-  const navigate = useNavigate();
   const { report, setReport } = useAuditStore();
   const [saving, setSaving] = useState(false);
   const [apiError, setApiError] = useState(false);
@@ -24,36 +23,33 @@ export default function Results() {
     );
   }
 
-  const persistReport = async () => {
+  const ensureAuditSaved = async () => {
+    if (report.auditId) return report.auditId;
+
     setSaving(true);
     setApiError(false);
     try {
       const saved = await saveAudit(report);
       setReport(saved);
-      navigate(`/audit/${saved.auditId}`);
+      return saved.auditId;
     } catch {
       setApiError(true);
+      throw new Error('Unable to save audit.');
     } finally {
       setSaving(false);
     }
   };
 
-  if (saving) return <LoadingScreen label="Saving shareable report" />;
+  if (saving) return <LoadingScreen label="Generating share link" />;
 
   return (
     <>
-      {!report.auditId && (
-        <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
-          <div className="glass-card rounded-2xl p-4 md:flex md:items-center md:justify-between">
-            <p className="text-sm text-[#94A3B8]">Save this audit to generate a public shareable report URL.</p>
-            <button onClick={persistReport} className="app-button-primary mt-4 rounded-xl px-4 py-2 text-sm font-semibold md:mt-0">
-              Generate share link
-            </button>
-          </div>
-          {apiError && <p className="mt-3 text-sm text-[#8B5CF6]">Backend is not reachable. Run the API or keep using the local report.</p>}
-        </div>
+      <ResultsDashboard report={report} ensureAuditSaved={ensureAuditSaved} />
+      {apiError && (
+        <p className="mx-auto max-w-7xl px-4 pb-10 text-sm text-[#8B5CF6] sm:px-6 lg:px-8">
+          Backend is not reachable. The report still works locally, but the share link cannot be generated yet.
+        </p>
       )}
-      <ResultsDashboard report={report} />
     </>
   );
 }

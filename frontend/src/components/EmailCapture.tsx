@@ -1,35 +1,44 @@
 import { FormEvent, useState } from 'react';
-import { MailCheck, Save, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ExternalLink, MailCheck, Save, ShieldCheck } from 'lucide-react';
 import { saveLead } from '../utils/api';
+import { referralCodeFromAuditId, withReferralCode } from '../utils/referral';
 import AnimatedButton from './AnimatedButton';
 
 export default function EmailCapture({
   auditId,
   efficient = false,
   estimatedMonthlySavings = 0,
+  ensureAuditSaved,
 }: {
   auditId?: string;
   efficient?: boolean;
   estimatedMonthlySavings?: number;
+  ensureAuditSaved?: () => Promise<string | undefined>;
 }) {
   const [form, setForm] = useState({ name: '', email: '', company: '', role: '', teamSize: '', website: '' });
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [shareAuditId, setShareAuditId] = useState(auditId || '');
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setStatus('saving');
     try {
+      const savedAuditId = auditId || (await ensureAuditSaved?.()) || '';
       await saveLead({
         ...form,
         teamSize: form.teamSize ? Number(form.teamSize) : undefined,
-        auditId,
+        auditId: savedAuditId,
         estimatedMonthlySavings,
       });
+      setShareAuditId(savedAuditId);
       setStatus('saved');
     } catch {
       setStatus('error');
     }
   };
+
+  const referralCode = referralCodeFromAuditId(shareAuditId);
+  const publicReportUrl = shareAuditId ? withReferralCode(`${window.location.origin}/audit/${shareAuditId}`, referralCode) : '';
 
   return (
     <form onSubmit={submit} className="glass-card rounded-3xl p-6">
@@ -65,11 +74,33 @@ export default function EmailCapture({
       </div>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <AnimatedButton type="submit" disabled={status === 'saving'} icon={<Save className="h-4 w-4" />}>
-          {status === 'saving' ? 'Saving...' : efficient ? 'Notify Me' : 'Save My Audit Report'}
+          {status === 'saving' ? 'Saving...' : efficient ? 'Generate Link' : 'Save My Audit Report'}
         </AnimatedButton>
-        {status === 'saved' && <p className="text-sm text-[#22D3EE]">Saved. Your team can revisit this audit anytime.</p>}
+        {status === 'saved' && (
+          <p className="inline-flex items-center gap-2 text-sm text-[#22D3EE]">
+            <CheckCircle2 className="h-4 w-4" />
+            Saved. Your share link is ready.
+          </p>
+        )}
         {status === 'error' && <p className="text-sm text-[#8B5CF6]">Lead capture is offline. The report still works locally.</p>}
       </div>
+      {publicReportUrl && status === 'saved' && (
+        <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-aqua/20 bg-aqua/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="break-all text-sm font-medium text-white">{publicReportUrl}</p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-aqua">
+              Referral code: {referralCode}
+            </p>
+          </div>
+          <a
+            href={publicReportUrl}
+            className="app-button-secondary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold"
+          >
+            Open public report
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
+      )}
       <p className="mt-4 inline-flex items-start gap-2 text-xs leading-5 text-[#94A3B8]">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-aqua" />
         Public reports never include contact details. This form uses a hidden honeypot field and API rate limiting to reduce spam.

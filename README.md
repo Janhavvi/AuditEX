@@ -27,6 +27,10 @@ TODO: add at least three deployed-product screenshots or a 30-second YouTube/Loo
 - Open Graph metadata updates for public reports
 - Lead capture form with optional company, role, and team size fields
 - Resend transactional confirmation emails with Credex follow-up messaging for high-savings audits
+- Benchmark mode showing AI spend per developer against a modeled company-size baseline
+- Referral codes appended to public share links for attribution
+- Embeddable audit widget script at `/embed.js`
+- Launch post and X/Twitter thread draft in `LAUNCH_POST.md`
 - Express + MongoDB backend with typed models and deployment-ready environment config
 
 ## Tech Stack

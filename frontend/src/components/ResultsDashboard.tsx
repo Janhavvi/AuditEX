@@ -6,6 +6,7 @@ import {
   BarChart3,
   Bell,
   BriefcaseBusiness,
+  CalendarCheck,
   CheckCircle2,
   ClipboardCheck,
   Copy,
@@ -21,8 +22,8 @@ import {
 import type { AuditReport, AuditTool, Recommendation } from '../types/audit';
 import { currency, percent } from '../utils/formatter';
 import { generateSummary, getAuditPdfUrl, getAuditShareUrl } from '../utils/api';
+import { referralCodeFromAuditId, withReferralCode } from '../utils/referral';
 import AnimatedButton from './AnimatedButton';
-import ConsultationCTA from './ConsultationCTA';
 import EmailCapture from './EmailCapture';
 import RecommendationCarousel from './RecommendationCarousel';
 import SavingsChart from './SavingsChart';
@@ -63,12 +64,31 @@ const buildToolBreakdown = (report: AuditReport): ToolBreakdownRow[] =>
     };
   });
 
-export default function ResultsDashboard({ report, publicView = false }: { report: AuditReport; publicView?: boolean }) {
+const benchmarkForTeamSize = (teamSize: number) => {
+  if (teamSize <= 5) return 65;
+  if (teamSize <= 20) return 95;
+  return 125;
+};
+
+export default function ResultsDashboard({
+  report,
+  publicView = false,
+  ensureAuditSaved,
+}: {
+  report: AuditReport;
+  publicView?: boolean;
+  ensureAuditSaved?: () => Promise<string | undefined>;
+}) {
   const [summary, setSummary] = useState(report.summary || '');
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle');
   const efficientAudit = report.totals.estimatedMonthlySavings < 100 || report.recommendations.every((item) => item.estimatedMonthlySavings <= 0);
   const highSavingsAudit = report.totals.estimatedMonthlySavings > 500;
   const toolBreakdown = buildToolBreakdown(report);
+  const teamSize = Math.max(...report.tools.map((tool) => tool.teamSize), 1);
+  const spendPerDeveloper = report.totals.totalMonthlySpend / teamSize;
+  const peerBenchmark = benchmarkForTeamSize(teamSize);
+  const benchmarkDelta = spendPerDeveloper - peerBenchmark;
+  const referralCode = referralCodeFromAuditId(report.auditId);
   
   const statCards = [
     ['Monthly spend', currency(report.totals.totalMonthlySpend)],
@@ -77,8 +97,8 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
     ['Savings rate', percent(report.totals.savingsPercentage)],
   ];
   
-  const publicReportUrl = report.auditId ? `${window.location.origin}/audit/${report.auditId}` : '';
-  const shareUrl = report.auditId ? getAuditShareUrl(report.auditId) : '';
+  const publicReportUrl = report.auditId ? withReferralCode(`${window.location.origin}/audit/${report.auditId}`, referralCode) : '';
+  const shareUrl = report.auditId ? withReferralCode(getAuditShareUrl(report.auditId), referralCode) : '';
   const shareText = `AuditEX found ${currency(report.totals.estimatedYearlySavings)} in potential yearly AI savings across ${report.tools.length} tools.`;
   const shareSubject = 'AuditEX AI spend report';
   const encodedShareUrl = encodeURIComponent(shareUrl);
@@ -178,6 +198,17 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
             {subcopy}
           </p>
         </div>
+        {!report.auditId && (
+          <a
+            href="https://credex.rocks"
+            target="_blank"
+            rel="noreferrer"
+            className="app-button-primary inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-semibold transition"
+          >
+            Book Consultation
+            <CalendarCheck className="h-4 w-4" />
+          </a>
+        )}
       </div>
 
       <section id="snapshot" className="scroll-mt-28">
@@ -248,15 +279,6 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
           </div>
         </div>
 
-        {highSavingsAudit && (
-          <div className="border-b border-white/10 py-8">
-            <ConsultationCTA
-              monthlySavings={report.totals.estimatedMonthlySavings}
-              annualSavings={report.totals.estimatedYearlySavings}
-            />
-          </div>
-        )}
-
         <div className="grid gap-4 border-b border-white/10 py-6 md:grid-cols-4">
           {statCards.map(([label, value], index) => (
             <motion.div
@@ -270,6 +292,31 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
               <p className="mt-3 text-3xl font-bold text-white">{value}</p>
             </motion.div>
           ))}
+        </div>
+
+        <div className="grid gap-4 border-b border-white/10 py-8 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-aqua">
+              <BarChart3 className="h-4 w-4" />
+              Benchmark mode
+            </p>
+            <h2 className="mt-3 text-2xl font-bold text-white">
+              Your AI spend per developer is {currency(spendPerDeveloper)}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
+              Companies your size average about {currency(peerBenchmark)} per developer per month in this planning model.{' '}
+              {benchmarkDelta > 0
+                ? `That puts this stack ${currency(benchmarkDelta)} per developer above the modeled peer baseline.`
+                : `That puts this stack ${currency(Math.abs(benchmarkDelta))} per developer below the modeled peer baseline.`}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-[#0A0F23]/45 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Referral code</p>
+            <p className="mt-2 text-3xl font-bold text-white">{referralCode || 'Generated after email capture'}</p>
+            <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
+              Shared report links include this code so referrals can be attributed without exposing contact details.
+            </p>
+          </div>
         </div>
 
         <div className="border-b border-white/10 py-8">
@@ -395,6 +442,7 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
               auditId={report.auditId}
               efficient={efficientAudit}
               estimatedMonthlySavings={report.totals.estimatedMonthlySavings}
+              ensureAuditSaved={ensureAuditSaved}
             />
           )}
         </div>
