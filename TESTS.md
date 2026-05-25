@@ -1,48 +1,87 @@
 # Tests
 
-## Automated Tests
+## How To Run
 
-### `frontend/src/utils/auditEngine.test.ts`
-
-Run with:
+From the frontend app:
 
 ```bash
 cd frontend
 npm run test
 ```
 
-Coverage:
+For the full local verification pass used before final cleanup:
 
-1. Unused seats: verifies `runAudit` detects extra ChatGPT Team seats and calculates savings from vendor seat pricing.
-2. Plan benchmark gap: verifies spend above GitHub Copilot Business public benchmark creates a recommendation with the expected savings.
-3. API routing: verifies high-volume OpenAI API spend triggers conservative workload-routing savings.
-4. Category consolidation: verifies overlapping assistant tools model savings from the smallest duplicate spend, not a blanket percentage.
-5. Savings cap: verifies total estimated savings are capped at 72 percent of monthly spend and annual savings match monthly savings times 12.
-6. No-spend path: verifies free or zero-spend tools do not generate manufactured recommendations or savings.
+```bash
+cd frontend
+npm run lint
+npm run test
+npm run build
 
-## CI
+cd ../backend
+npm run build
+```
 
-GitHub Actions workflow:
+## Automated Tests Written
+
+### `frontend/src/utils/auditEngine.test.ts`
+
+This file covers the deterministic audit engine, which is the highest-risk part of the product because it calculates customer-facing savings. The tests call `runAudit` directly with typed `AuditTool` fixtures and assert totals, recommendations, savings amounts, and no-savings behavior.
+
+1. `flags unused seats using vendor seat pricing`
+   - Covers unused-seat detection for ChatGPT Team.
+   - Verifies the engine calculates four unused seats at the public $30/seat/month benchmark, producing $120/month in savings.
+   - Also checks total monthly spend remains $300.
+
+2. `flags spend above public plan benchmarks`
+   - Covers spend that is materially above public list pricing.
+   - Uses GitHub Copilot Business with five seats and $300 entered spend.
+   - Verifies the benchmark-gap recommendation exists and calculates $205/month in savings against the expected public benchmark.
+
+3. `recommends API workload routing only for high-volume API spend`
+   - Covers conservative API workload-routing logic.
+   - Uses OpenAI API direct at $1,000/month.
+   - Verifies the recommendation includes OpenAI API direct and applies the 12% high-volume routing estimate.
+
+4. `models category consolidation from the smallest overlapping spend`
+   - Covers duplicate assistant tooling.
+   - Uses ChatGPT, Claude, and Gemini together.
+   - Verifies consolidation savings are modeled from the smallest duplicate line item, not a broad percentage cut.
+
+5. `caps total estimated savings at 72 percent of monthly spend`
+   - Covers the global savings cap.
+   - Uses overlapping coding-tool spend across Cursor, GitHub Copilot, and Windsurf.
+   - Verifies total savings never exceed 72% of monthly spend and annual savings remain exactly monthly savings times 12.
+
+6. `does not manufacture recommendations for tools with no monthly spend`
+   - Covers the honest low/no-spend path.
+   - Uses Cursor Hobby at $0/month.
+   - Verifies the engine returns zero recommendations and zero estimated savings.
+
+## CI Coverage
+
+The GitHub Actions workflow is defined at:
 
 ```text
 .github/workflows/ci.yml
 ```
 
-The workflow runs on pushes and pull requests to `main`:
+It runs on pushes and pull requests to `main` and performs:
 
-- frontend install
-- backend install
+- root dependency install
+- frontend dependency install
+- backend dependency install
 - frontend lint
 - frontend audit-engine tests
-- frontend build
-- backend build
+- frontend production build
+- backend TypeScript build
 
-## Manual Verification
+## Latest Local Verification
 
-Manual checks performed locally during development:
+The following commands were run successfully after the final refactor:
 
-- `npm run build` in `frontend`
 - `npm run lint` in `frontend`
-- `npm run test` in `frontend`
+- `npm run test` in `frontend` — 1 test file, 6 tests passed
+- `npm run build` in `frontend`
 - `npm run build` in `backend`
-- Local API checks for summary fallback, lead capture, public share preview, Open Graph SVG, and PDF export
+
+The frontend build still reports Vite's existing large chunk warning because charts, Three.js, animation, and the main app are bundled together. It does not fail the build, but route-level code splitting is the next production optimization.

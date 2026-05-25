@@ -1,25 +1,70 @@
-# GTM
+# GTM.md
 
-The exact target user is a founder, Head of Operations, or first finance hire at a 10-80 person AI-heavy startup that has grown into messy tool spend before hiring a full procurement function. They have engineers expensing Cursor, Copilot, v0, ChatGPT, Claude, and API credits across multiple cards. They are not looking for a full SaaS management platform yet; they want a fast answer to "are we wasting money, and is there enough here to justify a real vendor review?"
+AuditEX is built for a very specific type of company: AI-heavy startups with roughly 10–80 employees that adopted tools quickly before building proper procurement or finance controls. The ideal user is usually the founder, Head of Operations, or first finance hire trying to understand whether AI tooling costs are quietly becoming a serious burn issue.
 
-Right before they need AuditEX, they are probably searching or scrolling through things like "Cursor business pricing vs Copilot," "OpenAI API cost optimization," "Claude Team vs ChatGPT Team," "startup AI tool budget," "how to reduce SaaS spend," or posts complaining that AI subscriptions quietly became a second cloud bill. They may also be looking at Ramp/Brex card exports and realizing vendor names do not map cleanly to team usage.
+This user is not looking for enterprise procurement software. They are usually trying to answer a simpler question first:
 
-Specific places to reach them:
+> “Are we wasting enough money on AI tools that it’s worth fixing?”
 
-- X: founders following AI tooling, finance ops, and "build in public" accounts; reply to posts about tool sprawl with a concrete audit offer.
-- Reddit: `r/SaaS`, `r/startups`, `r/indiehackers`, `r/LocalLLaMA` when posts discuss API cost.
-- Slack/communities: Hampton, Pavilion finance/ops groups, Lenny's Newsletter community, Founders Cafe, Indie Worldwide, On Deck alumni circles, college founder groups.
-- Discord: Cursor, v0, AI engineering, and indie builder servers where people discuss whether paid plans are worth it.
-- LinkedIn: operators and founders posting about burn reduction, AI adoption, or finance stack cleanup.
+Most of these teams already pay for multiple overlapping products without realizing it. Different engineers expense Cursor, Copilot, ChatGPT, Claude, v0, Perplexity, GPU credits, or OpenAI API usage across different cards and departments. Nobody fully owns the stack yet, so costs spread invisibly.
 
-First 100 users in 30 days with $0 paid budget:
+Right before discovering AuditEX, these users are typically searching for practical answers rather than software platforms. Their search history looks messy and urgent:
 
-1. Manually audit 20 public "AI stack" posts and publish anonymized teardown threads: "This 18-person team could save $X/mo by changing 3 things."
-2. DM 100 founders/operators with a screenshot of a specific insight, not a generic pitch. Ask for 8 minutes and offer a free shareable report.
-3. Post in targeted communities with an explicit artifact: "Drop your AI stack and team size; I will reply with one savings hypothesis."
-4. Ask every completed audit user to share their public report link. Make the report look credible enough that sharing feels like a badge of financial discipline.
-5. Partner with fractional CFOs and startup finance consultants: give them a white-glove version they can use with clients.
+- “Cursor vs Copilot pricing for teams”
+- “How to reduce OpenAI API cost”
+- “Claude Team vs ChatGPT Team”
+- “AI tool spend getting out of control”
+- “Best AI tools for startups”
+- “SaaS spend audit template”
+- “How much should a startup spend on AI tools”
 
-The unfair distribution channel is Credex itself: it can identify companies already buying credits or considering credit products, then offer AuditEX as a value-first diagnostic. That is warmer than a generic SaaS cold start because the user already has a financial incentive to understand savings and credits.
+They also spend time scrolling through finance dashboards, card exports, and Slack messages trying to understand why software expenses suddenly doubled in three months.
 
-Week-1 traction if this works: 40 completed audits, 12 saved public reports, 8 qualified high-savings leads over $500/mo, 4 Credex consultations booked, and at least 2 organic shares from report URLs.
+The best distribution channels are not broad startup audiences. The users already talk in concentrated communities where people compare tooling, API costs, and startup operations in public.
+
+The highest-quality channels are:
+
+- Reddit communities like `r/SaaS`, `r/startups`, `r/indiehackers`, and `r/LocalLLaMA`
+- AI engineering Discord servers
+- Cursor and v0 communities
+- Lenny’s Newsletter community
+- Founder Slack groups
+- Hampton and On Deck operator circles
+- LinkedIn posts discussing startup burn reduction
+- X threads where founders complain about AI subscription costs
+
+The first 100 users can realistically come from highly targeted manual outreach rather than content marketing.
+
+The strategy is intentionally direct.
+
+First, publish detailed anonymized teardown posts showing how real startups overspend on AI tooling. Instead of generic advice, show concrete examples:
+
+> “This 14-person startup is spending for three overlapping coding assistants and could reduce monthly spend by 38%.”
+
+Those posts naturally attract founders already experiencing the same problem.
+
+Second, manually DM founders and operators with one specific observation instead of a sales pitch. For example:
+
+> “Noticed your team uses Cursor + Copilot + ChatGPT Team together. We’ve seen teams reduce overlap significantly there. Happy to run a free audit.”
+
+That message feels personal and useful rather than automated.
+
+Third, create public-facing audit reports that users can share internally or publicly. If the reports feel polished and credible, they become distribution themselves because founders forward them to investors, operators, and teammates.
+
+Another strong channel is partnerships with fractional CFOs and startup finance consultants. These people already manage software spend discussions but usually lack tooling focused specifically on AI subscriptions and API usage. Giving them a white-label or operator-friendly workflow creates leverage quickly.
+
+The biggest unfair advantage comes from Credex itself. Unlike a normal SaaS startup starting cold, Credex already has financial context around companies buying credits, managing spend, or exploring financing products. AuditEX can appear as a value-first diagnostic instead of another software pitch. That positioning creates significantly warmer demand.
+
+If the GTM strategy works, week-one traction should look measurable and specific rather than vanity metrics.
+
+Success indicators would include:
+
+- 40 completed audits
+- 10–15 publicly shared reports
+- Multiple companies identified with more than $500/month in avoidable spend
+- At least 4–5 qualified consultation calls booked
+- Organic reposts or founder referrals from shared audit reports
+
+The key insight behind the strategy is that founders already know AI tooling costs are getting messy. They just do not yet have a lightweight way to measure the problem clearly.
+
+AuditEX succeeds if it becomes the fastest way to answer that question.

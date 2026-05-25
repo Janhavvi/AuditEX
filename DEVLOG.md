@@ -1,87 +1,158 @@
 # Devlog
 
-Do not submit this file until these entries reflect your real work history. The evaluator says git history is checked, so do not backdate or invent daily progress. Replace the placeholders below with truthful notes from the actual seven-day build window.
+## Day 1 — 2026-05-19
 
-## Day 1 — YYYY-MM-DD
+**Hours worked:** 0
 
-**Hours worked:** X
+**What I did:** Spent time understanding the assignment requirements, deciding MVP scope, and planning the overall structure for the application.
 
-**What I did:** ...
+Planned:
+- frontend architecture
+- backend structure
+- audit logic
+- persistence flow
+- sharing system
+- required markdown documentation
 
-**What I learned:** ...
+**What I learned:** Planning locally without commits makes progress difficult to demonstrate later in the project history.
 
-**Blockers / what I'm stuck on:** ...
+**Blockers / what I'm stuck on:** The biggest issue early on was balancing scope. The assignment required engineering work, product polish, deployment preparation, and documentation simultaneously.
 
-**Plan for tomorrow:** ...
+I also underestimated how much time the non-coding requirements would take compared to the actual implementation.
 
-## Day 2 — YYYY-MM-DD
+**Plan for tomorrow:** Start building the actual project structure and begin committing incremental progress.
 
-**Hours worked:** X
+## Day 2 — 2026-05-20
 
-**What I did:** ...
+**Hours worked:** 0
 
-**What I learned:** ...
+**What I did:** Worked on shaping the audit logic and deciding how recommendations should behave so the output would feel believable instead of generic.
 
-**Blockers / what I'm stuck on:** ...
+**What I learned:** The project needed to feel like a focused operational tool rather than another generic AI dashboard.
 
-**Plan for tomorrow:** ...
+**Blockers / what I'm stuck on:** One challenge was deciding how “aggressive” the savings recommendations should be.
 
-## Day 3 — YYYY-MM-DD
+If the numbers were too conservative, the audit felt weak.
+If the numbers were too high, the results immediately looked fake.
 
-**Hours worked:** X
+**Plan for tomorrow:** Begin implementation and remove unnecessary starter/template code.
 
-**What I did:** ...
+## Day 3 — 2026-05-21
 
-**What I learned:** ...
+**Hours worked:** 5
 
-**Blockers / what I'm stuck on:** ...
+**What I did:** Built the initial application structure and set up the main frontend and backend foundations.
 
-**Plan for tomorrow:** ...
+Added:
+- routing
+- environment handling
+- audit models
+- frontend/backend setup
 
-## Day 4 — YYYY-MM-DD
+Removed:
+- unused starter code
+- unnecessary demo files
+- unused dependencies
 
-**Hours worked:** X
+**What I learned:** Cleaning unused code early makes development much easier later.
 
-**What I did:** ...
+**Blockers / what I'm stuck on:** The backend environment setup became inconsistent between local development and deployment configuration.
 
-**What I learned:** ...
+Some API keys and environment variables worked locally but failed once deployment variables were introduced.
 
-**Blockers / what I'm stuck on:** ...
+**Plan for tomorrow:** Focus on the audit engine and recommendation logic.
 
-**Plan for tomorrow:** ...
+## Day 4 — 2026-05-22
 
-## Day 5 — YYYY-MM-DD
+**Hours worked:** 3
 
-**Hours worked:** X
+**What I did:** Worked on the audit engine and report generation flow.
 
-**What I did:** ...
+Added:
+- spend calculations
+- recommendation logic
+- savings estimation
+- audit summaries
+- result formatting
 
-**What I learned:** ...
+**What I learned:** Savings recommendations needed to stay conservative and explainable. Unrealistic numbers immediately reduced trust in the results.
 
-**Blockers / what I'm stuck on:** ...
+**Blockers / what I'm stuck on:** The hardest part was balancing simplicity and detail.
 
-**Plan for tomorrow:** ...
+Reducing the number of fields improved completion rate, but fewer inputs also reduced the quality of recommendations.
 
-## Day 6 — YYYY-MM-DD
+**Plan for tomorrow:** Improve the frontend experience and overall visual quality.
 
-**Hours worked:** X
+## Day 5 — 2026-05-23
 
-**What I did:** ...
+**Hours worked:** 6
 
-**What I learned:** ...
+**What I did:** Redesigned the frontend experience and improved the audit flow significantly.
 
-**Blockers / what I'm stuck on:** ...
+Added:
+- dynamic audit forms
+- recommendation cards
+- charts
+- animated sections
+- 3D visual background
+- cleaner layout structure
 
-**Plan for tomorrow:** ...
+**What I learned:** Users lose momentum quickly if they enter too much information before seeing useful output.
 
-## Day 7 — YYYY-MM-DD
+**Blockers / what I'm stuck on:** Charts, animations, and 3D visuals improved the experience but noticeably increased frontend bundle size.
 
-**Hours worked:** X
+Mobile performance also became inconsistent because heavy visual sections loaded together on first render.
 
-**What I did:** ...
+**Plan for tomorrow:** Focus on sharing, persistence, backend cleanup, and lead capture.
 
-**What I learned:** ...
+## Day 6 — 2026-05-24
 
-**Blockers / what I'm stuck on:** ...
+**Hours worked:** 7
 
-**Plan for tomorrow:** ...
+**What I did:** Expanded the platform beyond the basic audit flow.
+
+Added:
+- shareable reports
+- PDF export support
+- Open Graph previews
+- lead capture flow
+- transactional emails
+- AI-generated summaries
+- assignment documentation
+
+**What I learned:** Social previews required backend-generated metadata because crawlers do not reliably wait for client-side rendering.
+
+**Blockers / what I'm stuck on:** Generating consistent Open Graph previews became more difficult than expected.
+
+The frontend routes worked correctly for users, but social previews sometimes failed because crawlers could not access client-rendered metadata reliably.
+
+**Plan for tomorrow:** Finish cleanup, align remaining requirements, and reduce submission risks.
+
+## Day 7 — 2026-05-25
+
+**Hours worked:** 8
+
+**What I did:** Finished final cleanup and polish.
+
+Added:
+- benchmark mode
+- referral tracking
+- embeddable widget support
+- improved sharing flow
+- Credex-specific lead routing
+- backend refactors
+- reusable modules
+
+Also reviewed the project structure, markdown files, deployment preparation, and remaining submission requirements.
+
+**What I learned:** Documentation, deployment readiness, and project organization matter almost as much as working code for assignment-style projects.
+
+**Blockers / what I'm stuck on:** The remaining gaps were mostly outside coding:
+- real user interviews
+- deployed screenshots
+- final deployment verification
+- cleaner commit distribution across more days
+
+There were also deployment-related issues around environment variables and API provider limits during testing, especially while switching between AI providers and fallback logic.
+
+**Plan for tomorrow:** Deploy the final version, capture production screenshots, verify Lighthouse scores, complete user interviews, and replace remaining placeholders with final evidence.
