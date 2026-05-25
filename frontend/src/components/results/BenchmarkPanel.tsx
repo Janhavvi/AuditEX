@@ -30,7 +30,7 @@ export default function BenchmarkPanel({ benchmarkDelta, peerBenchmark, referral
 
       <div className="rounded-2xl border border-white/10 bg-[#0A0F23]/45 p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Referral code</p>
-        <p className="mt-2 text-3xl font-bold text-white">{referralCode || 'Generated after email capture'}</p>
+        <p className="mt-2 text-3xl font-bold text-white">{referralCode || 'Generating share link...'}</p>
         <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
           Shared report links include this code so referrals can be attributed without exposing contact details.
         </p>
