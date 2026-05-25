@@ -7,6 +7,10 @@ import AnimatedButton from './AnimatedButton';
 import AuditSummary from './AuditSummary';
 import ToolFormContainer from './ToolFormContainer';
 
+const previewTools = supportedTools
+  .filter((name) => !['Anthropic API direct', 'NVIDIA NIM'].includes(name))
+  .slice(0, 6);
+
 export default function ToolForm() {
   const navigate = useNavigate();
   const {
@@ -76,7 +80,7 @@ export default function ToolForm() {
         </div>
 
         <div className="flex flex-wrap gap-2 lg:max-w-md lg:justify-end">
-          {supportedTools.slice(0, 6).map((name) => (
+          {previewTools.map((name) => (
             <span
               key={name}
               className="rounded-full border border-white/10 bg-[#0A0F23]/50 px-3 py-1.5 text-xs font-medium text-[#CBD5E1]"

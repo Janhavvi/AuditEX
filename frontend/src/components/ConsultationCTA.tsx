@@ -1,5 +1,4 @@
 import { CalendarCheck } from 'lucide-react';
-import AnimatedButton from './AnimatedButton';
 import { currency } from '../utils/formatter';
 
 export default function ConsultationCTA({ monthlySavings, annualSavings }: { monthlySavings: number; annualSavings: number }) {
@@ -12,9 +11,15 @@ export default function ConsultationCTA({ monthlySavings, annualSavings }: { mon
           This audit shows {currency(annualSavings)} in annual savings potential. Credex can help turn the estimate into vendor actions, usage controls, and renewal leverage.
         </p>
       </div>
-      <AnimatedButton className="mt-5 md:mt-0" icon={<CalendarCheck className="h-4 w-4" />}>
-        Talk to Credex
-      </AnimatedButton>
+      <a
+        href="https://credex.rocks"
+        target="_blank"
+        rel="noreferrer"
+        className="app-button-primary mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-semibold transition md:mt-0"
+      >
+        <span>Book Credex Consultation</span>
+        <CalendarCheck className="h-4 w-4" />
+      </a>
     </div>
   );
 }

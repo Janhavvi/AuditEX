@@ -28,7 +28,7 @@ export default function StatsSection() {
       <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-4">
         {[
           ['Average savings surfaced', 28, '%'],
-          ['Supported AI tools', 9, ''],
+          ['Supported AI tools', 10, ''],
           ['Audit setup time', 4, ' min'],
           ['Annual spend reviewed', 2, 'M+'],
         ].map(([label, value, suffix], index) => (

@@ -1,7 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { BadgeDollarSign, BarChart3, Bell, CheckCircle2, ClipboardCheck, Copy, ExternalLink, LockKeyhole, Printer, Share2, Target } from 'lucide-react';
+import {
+  BadgeDollarSign,
+  BarChart3,
+  Bell,
+  BriefcaseBusiness,
+  CheckCircle2,
+  ClipboardCheck,
+  Copy,
+  ExternalLink,
+  Mail,
+  MessageCircle,
+  Printer,
+  Share2,
+  Target,
+  Users,
+  LockKeyhole,
+} from 'lucide-react';
 import type { AuditReport, AuditTool, Recommendation } from '../types/audit';
 import { currency, percent } from '../utils/formatter';
 import { generateSummary, getAuditPdfUrl, getAuditShareUrl } from '../utils/api';
@@ -64,18 +80,61 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
   const publicReportUrl = report.auditId ? `${window.location.origin}/audit/${report.auditId}` : '';
   const shareUrl = report.auditId ? getAuditShareUrl(report.auditId) : '';
   const shareText = `AuditEX found ${currency(report.totals.estimatedYearlySavings)} in potential yearly AI savings across ${report.tools.length} tools.`;
-  const twitterShareUrl = shareUrl
-    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
-    : '';
-  const linkedinShareUrl = shareUrl
-    ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-    : '';
+  const shareSubject = 'AuditEX AI spend report';
+  const encodedShareUrl = encodeURIComponent(shareUrl);
+  const encodedShareText = encodeURIComponent(shareText);
+  const sharePlatforms = shareUrl
+    ? [
+        {
+          label: 'LinkedIn',
+          href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedShareUrl}`,
+          icon: <BriefcaseBusiness className="h-4 w-4" />,
+        },
+        {
+          label: 'Facebook',
+          href: `https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`,
+          icon: <Share2 className="h-4 w-4" />,
+        },
+        {
+          label: 'WhatsApp',
+          href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
+          icon: <MessageCircle className="h-4 w-4" />,
+        },
+        {
+          label: 'Teams',
+          href: `https://teams.microsoft.com/share?href=${encodedShareUrl}&msgText=${encodedShareText}`,
+          icon: <Users className="h-4 w-4" />,
+        },
+        {
+          label: 'Email',
+          href: `mailto:?subject=${encodeURIComponent(shareSubject)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`,
+          icon: <Mail className="h-4 w-4" />,
+        },
+      ]
+    : [];
 
   const copyShare = async () => {
     if (!shareUrl) return;
     await navigator.clipboard.writeText(shareUrl);
     setCopyState('copied');
     window.setTimeout(() => setCopyState('idle'), 1800);
+  };
+
+  const nativeShare = async () => {
+    if (!shareUrl) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareSubject,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+      }
+    }
+    await copyShare();
   };
 
   const pdfUrl = report.auditId ? getAuditPdfUrl(report.auditId) : '';
@@ -137,8 +196,12 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
                   This public version shows tools, totals, savings, and recommendations only. Contact details from lead capture are stored separately and never embedded in the share URL.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <button onClick={copyShare} className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
+              <div className="flex flex-wrap gap-2 lg:max-w-xl lg:justify-end">
+                <button type="button" onClick={nativeShare} className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
+                  <Share2 className="h-4 w-4" />
+                  Share
+                </button>
+                <button type="button" onClick={copyShare} className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
                   {copyState === 'copied' ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copyState === 'copied' ? 'Copied' : 'Copy link'}
                 </button>
@@ -148,13 +211,18 @@ export default function ResultsDashboard({ report, publicView = false }: { repor
                     Open public view
                   </Link>
                 )}
-                <a href={twitterShareUrl} target="_blank" rel="noreferrer" className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
-                  <Share2 className="h-4 w-4" />
-                  Share
-                </a>
-                <a href={linkedinShareUrl} target="_blank" rel="noreferrer" className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
-                  LinkedIn
-                </a>
+                {sharePlatforms.map((platform) => (
+                  <a
+                    key={platform.label}
+                    href={platform.href}
+                    target={platform.href.startsWith('mailto:') ? undefined : '_blank'}
+                    rel={platform.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                    className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold"
+                  >
+                    {platform.icon}
+                    {platform.label}
+                  </a>
+                ))}
                 <a href={pdfUrl} className="app-button-secondary inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold">
                   <Printer className="h-4 w-4" />
                   PDF

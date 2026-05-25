@@ -20,7 +20,7 @@ const sendLeadEmail = async (lead: { email: string; name: string; auditId?: stri
   const savingsLine = lead.estimatedMonthlySavings
     ? `AuditEX found about $${Math.round(lead.estimatedMonthlySavings)} in defensible monthly savings.\n\n`
     : '';
-  const credexLine = highSavings
+  const followUpLine = highSavings
     ? 'Because this is a high-savings case, Credex will reach out with next steps for a vendor and workflow review.\n\n'
     : 'We will keep you posted when new optimizations apply to your stack.\n\n';
 
@@ -35,7 +35,7 @@ const sendLeadEmail = async (lead: { email: string; name: string; auditId?: stri
         from: process.env.RESEND_FROM_EMAIL || 'AuditEX <audit@auditex.ai>',
         to: lead.email,
         subject: 'Your AuditEX AI spend audit was received',
-        text: `Hi ${lead.name},\n\nYour AuditEX audit has been received.\n\n${savingsLine}${credexLine}${auditUrl ? `Shareable report: ${auditUrl}\n\n` : ''}AuditEX`,
+        text: `Hi ${lead.name},\n\nYour AuditEX audit has been received.\n\n${savingsLine}${followUpLine}${auditUrl ? `Shareable report: ${auditUrl}\n\n` : ''}AuditEX`,
       }),
     });
 

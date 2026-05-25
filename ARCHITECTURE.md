@@ -109,3 +109,11 @@ npm --prefix backend run build
 ```
 
 If the mobile Performance score falls below 85, the first optimization targets are code-splitting chart/3D sections, deferring non-critical animations, and reducing initial JavaScript on the landing and audit form routes.
+
+## Scaling To 10k Audits Per Day
+
+At 10k audits/day, the first change would be to move summary generation and email delivery off the request path. Audit creation would synchronously store the deterministic audit result, then enqueue background jobs for the LLM summary, Resend email, PDF generation, and any CRM routing. The API would use idempotency keys for audit saves, stricter per-IP and per-email rate limits, and a queue-backed retry policy so provider outages do not slow down the core audit flow.
+
+MongoDB would need compound indexes on `auditId`, `createdAt`, `highSavings`, and lead email fields, plus TTL or archival rules for stale anonymous audits. Public report traffic should sit behind CDN caching for `/api/audits/:id/share`, `/api/audits/:id/og.svg`, and PDF assets. The frontend should split the landing, form, results, charts, and 3D code into separate route chunks so first load stays below the Lighthouse target even as reporting surfaces grow.
+
+Operationally, I would add structured logs, error tracking, provider latency metrics, and funnel analytics for audit started, generated, saved, shared, PDF downloaded, lead submitted, and Credex CTA clicked. At that scale, the most important product metric is not raw audit volume; it is high-savings qualified leads that include enough context for Credex to act.
