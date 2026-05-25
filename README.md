@@ -4,16 +4,15 @@
 
 AuditEX is an AI spend audit tool for seed to Series B founders, ops leads, and finance teams who need to understand whether their AI subscription and API spend is disciplined. It turns a manual list of tools, seats, plans, and monthly spend into deterministic savings recommendations, an AI-written executive summary, a shareable public report, and a qualified Credex lead path for high-savings cases.
 
-Live deployed URL: **TODO: add deployed frontend URL before submission.**
-
+Live deployed URL: https://main.d1gt3euco9a18p.amplifyapp.com
 ## Screenshots Or Recording
 
 TODO: add at least three deployed-product screenshots or a 30-second YouTube/Loom walkthrough before submission. Localhost screenshots do not count.
 
-- Screenshot 1: Landing page or audit form - TODO
-- Screenshot 2: Audit results with savings hero - TODO
-- Screenshot 3: Public shareable report - TODO
-- Optional screen recording: TODO
+- Screenshot 1: Landing page: ![alt text](image-1.png)
+- Screenshot 2 : Audit form :![alt text](image.png)
+- Screenshot 3: Audit results with savings :![alt text](image-2.png)
+- Screenshot 4: Public shareable report - TODO
 
 ## Features
 
