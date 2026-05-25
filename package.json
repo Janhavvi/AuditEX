@@ -10,6 +10,8 @@
     "build": "npm --prefix frontend run build && npm --prefix backend run build",
     "build:frontend": "npm --prefix frontend run build",
     "build:backend": "npm --prefix backend run build",
+    "render:build": "npm --prefix backend install && npm --prefix backend run build",
+    "render:start": "npm --prefix backend run start",
     "test": "npm --prefix frontend run test",
     "preview": "npm --prefix frontend run preview"
   },
