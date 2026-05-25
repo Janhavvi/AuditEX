@@ -6,10 +6,23 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { rateLimit } from './middleware/rateLimit.js';
 
 const app = express();
+const defaultClientOrigins = ['http://localhost:5173', 'https://main.d1gt3euco9a18p.amplifyapp.com'];
+const configuredClientOrigins = process.env.CLIENT_URL?.split(',').map((origin) => origin.trim()).filter(Boolean);
+const allowedClientOrigins = configuredClientOrigins?.length ? configuredClientOrigins : defaultClientOrigins;
+
+const isAllowedOrigin = (origin: string) =>
+  allowedClientOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.amplifyapp\.com$/i.test(origin);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL?.split(',') || ['http://localhost:5173'],
+    origin(origin, callback) {
+      if (!origin || isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   }),
 );

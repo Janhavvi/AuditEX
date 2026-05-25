@@ -3,8 +3,11 @@ import type { AuditReport, LeadPayload } from '../types/audit';
 
 const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
 const currentHostname = typeof window === 'undefined' ? 'localhost' : window.location.hostname;
-const defaultApiBaseUrl = localHosts.has(currentHostname) ? 'http://localhost:5000/api' : '/api';
-const apiBaseUrl = import.meta.env.VITE_API_URL || defaultApiBaseUrl;
+const configuredApiBaseUrl = import.meta.env.VITE_API_URL;
+const defaultApiBaseUrl = localHosts.has(currentHostname)
+  ? 'http://localhost:5000/api'
+  : 'https://auditex.onrender.com/api';
+const apiBaseUrl = configuredApiBaseUrl || defaultApiBaseUrl;
 
 const api = axios.create({
   baseURL: apiBaseUrl,

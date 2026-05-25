@@ -206,7 +206,8 @@ const escapeHtml = (value: string) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-const publicAuditUrl = (auditId: string) => `${process.env.CLIENT_URL || 'http://localhost:5173'}/audit/${encodeURIComponent(auditId)}`;
+const clientUrl = () => process.env.CLIENT_URL?.split(',')[0]?.trim() || 'https://main.d1gt3euco9a18p.amplifyapp.com';
+const publicAuditUrl = (auditId: string) => `${clientUrl()}/audit/${encodeURIComponent(auditId)}`;
 const apiOrigin = (req: Request) => process.env.PUBLIC_API_URL || `${req.protocol}://${req.get('host')}`;
 
 export const createAudit = async (req: Request, res: Response, next: NextFunction) => {

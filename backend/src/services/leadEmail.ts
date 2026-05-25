@@ -8,6 +8,7 @@ interface LeadEmail {
 }
 
 const HIGH_SAVINGS_THRESHOLD = 500;
+const clientUrl = () => process.env.CLIENT_URL?.split(',')[0]?.trim() || 'https://main.d1gt3euco9a18p.amplifyapp.com';
 
 export const sendLeadConfirmation = async (lead: LeadEmail) => {
   const apiKey = process.env.RESEND_API_KEY;
@@ -15,7 +16,7 @@ export const sendLeadConfirmation = async (lead: LeadEmail) => {
 
   const resend = new Resend(apiKey);
   const highSavings = Number(lead.estimatedMonthlySavings || 0) >= HIGH_SAVINGS_THRESHOLD;
-  const auditUrl = lead.auditId ? `${process.env.CLIENT_URL || 'http://localhost:5173'}/audit/${lead.auditId}` : '';
+  const auditUrl = lead.auditId ? `${clientUrl()}/audit/${lead.auditId}` : '';
   const savingsLine = lead.estimatedMonthlySavings
     ? `AuditEX found about $${Math.round(lead.estimatedMonthlySavings)} in defensible monthly savings.\n\n`
     : '';
