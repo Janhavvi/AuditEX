@@ -1,7 +1,10 @@
 import axios from 'axios';
 import type { AuditReport, LeadPayload } from '../types/audit';
 
-const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+const currentHostname = typeof window === 'undefined' ? 'localhost' : window.location.hostname;
+const defaultApiBaseUrl = localHosts.has(currentHostname) ? 'http://localhost:5000/api' : '/api';
+const apiBaseUrl = import.meta.env.VITE_API_URL || defaultApiBaseUrl;
 
 const api = axios.create({
   baseURL: apiBaseUrl,

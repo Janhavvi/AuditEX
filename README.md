@@ -97,6 +97,16 @@ cd backend
 npm install
 ```
 
+## Local Development
+
+From the project root, start both the API and frontend together:
+
+```bash
+npm run dev
+```
+
+The frontend runs at `http://localhost:5173` and the backend runs at `http://localhost:5000`.
+
 ## Frontend Setup
 
 ```bash
@@ -104,7 +114,7 @@ cd frontend
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173`.
+Use this only when you intentionally want the frontend by itself. Audit saving, public links, and lead capture require the backend to be running too.
 
 Optional environment variable:
 
@@ -112,7 +122,7 @@ Optional environment variable:
 VITE_API_URL=http://localhost:5000/api
 ```
 
-For Vercel, set `VITE_API_URL` to the deployed backend API URL.
+For Vercel, Amplify, or any static frontend host with a separate backend, set `VITE_API_URL` to the deployed backend `/api` URL. Without it, production builds fall back to same-origin `/api`.
 
 ## Backend Setup
 
@@ -151,8 +161,7 @@ git clone https://github.com/Janhavvi/AuditEX.git
 cd AuditEX
 npm --prefix frontend install
 npm --prefix backend install
-npm --prefix backend run dev
-npm --prefix frontend run dev
+npm run dev
 ```
 
 Open `http://localhost:5173`, enter AI tool spend, generate results, then save the audit to create a public URL.

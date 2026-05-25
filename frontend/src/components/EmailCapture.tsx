@@ -23,7 +23,16 @@ export default function EmailCapture({
     event.preventDefault();
     setStatus('saving');
     try {
-      const savedAuditId = auditId || (await ensureAuditSaved?.()) || '';
+      let savedAuditId = auditId || '';
+
+      if (!savedAuditId && ensureAuditSaved) {
+        try {
+          savedAuditId = (await ensureAuditSaved()) || '';
+        } catch {
+          savedAuditId = '';
+        }
+      }
+
       await saveLead({
         ...form,
         teamSize: form.teamSize ? Number(form.teamSize) : undefined,
@@ -79,10 +88,10 @@ export default function EmailCapture({
         {status === 'saved' && (
           <p className="inline-flex items-center gap-2 text-sm text-[#22D3EE]">
             <CheckCircle2 className="h-4 w-4" />
-            Saved. Your share link is ready.
+            {shareAuditId ? 'Saved. Your share link is ready.' : 'Saved. We received your details.'}
           </p>
         )}
-        {status === 'error' && <p className="text-sm text-[#8B5CF6]">Lead capture is offline. The report still works locally.</p>}
+        {status === 'error' && <p className="text-sm text-[#8B5CF6]">Could not save yet. Start the API or check the API URL, then try again.</p>}
       </div>
       {publicReportUrl && status === 'saved' && (
         <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-aqua/20 bg-aqua/10 p-4 sm:flex-row sm:items-center sm:justify-between">
